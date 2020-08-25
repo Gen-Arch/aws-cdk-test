@@ -1,28 +1,28 @@
-import autoscaling  = require('@aws-cdk/aws-autoscaling');
-import ec2          = require('@aws-cdk/aws-ec2');
-import elbv2        = require('@aws-cdk/aws-elasticloadbalancingv2');
-import cdk          = require('@aws-cdk/core');
+import autoscaling = require('@aws-cdk/aws-autoscaling');
+import ec2 = require('@aws-cdk/aws-ec2');
+import elbv2 = require('@aws-cdk/aws-elasticloadbalancingv2');
+import cdk = require('@aws-cdk/core');
 
 interface ComputeStackProps extends cdk.StackProps {
   vpc: ec2.IVpc;
-  sg: {[key: string]: ec2.ISecurityGroup; };
+  sg: { [key: string]: ec2.ISecurityGroup; };
 }
 
 export class ComputeStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props: ComputeStackProps) {
     super(scope, id, props);
 
-    const env:      string  = this.node.tryGetContext('env');
-    const app_name: string  = this.node.tryGetContext('prj');
-    const suffix:   string  = `${env}-${app_name}`
-    const params:   any     = this.node.tryGetContext(env);
+    const env: string = this.node.tryGetContext('env');
+    const app_name: string = this.node.tryGetContext('prj');
+    const suffix: string = `${env}-${app_name}`
+    const params: any = this.node.tryGetContext(env);
 
     // management instance
     const bastion = new ec2.Instance(this, `${suffix}-bastion`, {
       vpc: props.vpc,
       vpcSubnets: {
         subnetName: `${suffix}-public`
-      } ,
+      },
       instanceType: new ec2.InstanceType("t2.micro"),
       machineImage: new ec2.AmazonLinuxImage(),
       securityGroup: props.sg['bastion'],
@@ -34,7 +34,7 @@ export class ComputeStack extends cdk.Stack {
       vpc: props.vpc,
       vpcSubnets: {
         subnetName: `${suffix}-private`
-      } ,
+      },
       instanceType: new ec2.InstanceType("t2.micro"),
       machineImage: new ec2.AmazonLinuxImage(),
     });
@@ -45,7 +45,7 @@ export class ComputeStack extends cdk.Stack {
       internetFacing: true
     });
 
-    const listener  = lb.addListener('HTTP:80', {
+    const listener = lb.addListener('HTTP:80', {
       open: true,
       port: 80,
       protocol: elbv2.ApplicationProtocol.HTTP,
