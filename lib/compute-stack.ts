@@ -9,6 +9,8 @@ interface ComputeStackProps extends cdk.StackProps {
 }
 
 export class ComputeStack extends cdk.Stack {
+  public readonly ec2s: {[key: string]: ec2.Instance;} = {};
+
   constructor(scope: cdk.Construct, id: string, props: ComputeStackProps) {
     super(scope, id, props);
 
@@ -30,7 +32,7 @@ export class ComputeStack extends cdk.Stack {
     })
 
     // app instance
-    const asg = new autoscaling.AutoScalingGroup(this, `${suffix}-app`, {
+    const app = new autoscaling.AutoScalingGroup(this, `${suffix}-app`, {
       vpc: props.vpc,
       vpcSubnets: {
         subnetName: `${suffix}-private`
@@ -53,13 +55,28 @@ export class ComputeStack extends cdk.Stack {
 
     listener.addTargets('Target', {
       port: 80,
-      targets: [asg]
+      targets: [app]
     });
 
     listener.connections.allowDefaultPortFromAnyIpv4('Open to the world');
 
-    asg.scaleOnRequestCount('AModestLoad', {
+    app.scaleOnRequestCount('AModestLoad', {
       targetRequestsPerSecond: 1
     });
+
+    // execute commandline
+    //bastion.addUserData(
+    //  "sudo su -",
+    //  "yum -y update",
+    //  `hostnamectl set-hostname ${env}-bastion`
+    //);
+
+    //app.addUserData(
+    //  "sudo yum -y update",
+    //  `sudo hostnamectl set-hostname ${env}-app`
+    //);
+
+    // add instance list
+    this.ec2s["bastion"] = bastion
   }
 }

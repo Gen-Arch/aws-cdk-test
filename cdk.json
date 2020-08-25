@@ -5,13 +5,15 @@
     "aws-cdk:enableDiffNoFail": "true",
     "@aws-cdk/core:stackRelativeExports": "true",
     "prj": "aws-cdk",
-    "test": {
-    },
+    "hostzone": "gen-server.com",
     "dev": {
+      "maxAzs": 1
     },
     "stg": {
+      "maxAzs": 1
     },
     "prd": {
+      "maxAzs": 2
     }
   }
 }
