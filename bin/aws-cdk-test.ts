@@ -1,7 +1,13 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
 import * as cdk from '@aws-cdk/core';
-import { AwsCdkTestStack } from '../lib/aws-cdk-test-stack';
+import { ComputeStack } from '../lib/compute-stack';
+import { NetworkStack } from '../lib/network-stack';
 
 const app = new cdk.App();
-new AwsCdkTestStack(app, 'AwsCdkTestStack');
+const networkStack = new NetworkStack(app, "NetworkStack");
+
+new ComputeStack(app, 'ComputeStack', {
+  vpc: networkStack.vpc,
+  sg: networkStack.sg
+});
