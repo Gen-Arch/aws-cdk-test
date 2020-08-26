@@ -17,7 +17,7 @@ export class NetworkStack extends Stack {
     this.vpc = new Vpc(this, `${suffix}-vpc`, {
       enableDnsHostnames: true,
       enableDnsSupport: true,
-      maxAzs: 2,
+      maxAzs: params["maxAzs"],
       subnetConfiguration: [
         { name: `${suffix}-public`, subnetType: SubnetType.PUBLIC, cidrMask: 24 },
         { name: `${suffix}-private`, subnetType: SubnetType.PRIVATE, cidrMask: 24 }
