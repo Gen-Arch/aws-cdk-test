@@ -5,9 +5,9 @@
     "aws-cdk:enableDiffNoFail": "true",
     "@aws-cdk/core:stackRelativeExports": "true",
     "prj": "aws-cdk",
-    "hostzone": "gen-server.com",
+    "hostzone": "gen-arch.com",
     "dev": {
-      "maxAzs": 1
+      "maxAzs": 2
     },
     "stg": {
       "maxAzs": 1

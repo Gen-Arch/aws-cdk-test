@@ -20,20 +20,11 @@ export class R53Stack extends cdk.Stack {
       vpc: props.vpc
     })
 
-    const public_zone = new r53.PublicHostedZone(this, hostzone, {
-      zoneName: hostzone
-    })
-
     new r53.CnameRecord(this, `bastion.${env}.${hostzone}`, {
       zone: private_zone,
       recordName: "bastion",
       domainName: props.ec2s["bastion"].instancePrivateDnsName
     })
 
-    new r53.CnameRecord(this, `bastion.${hostzone}`, {
-      zone: public_zone,
-      recordName: "bastion",
-      domainName: props.ec2s["bastion"].instancePublicDnsName
-    })
   }
 }

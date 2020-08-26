@@ -15,6 +15,7 @@ export class NetworkStack extends Stack {
     const params: any = this.node.tryGetContext(env);
 
     this.vpc = new Vpc(this, `${suffix}-vpc`, {
+      cidr: '10.9.0.0/16',
       enableDnsHostnames: true,
       enableDnsSupport: true,
       maxAzs: params["maxAzs"],
@@ -28,7 +29,7 @@ export class NetworkStack extends Stack {
       allowAllOutbound: true,
       vpc: this.vpc,
       securityGroupName: `${suffix}-bastion`,
-      description: `${suffix}-app`
+      description: `${suffix}-bastion`
     });
 
     this.sg['bastion'].addIngressRule(Peer.anyIpv4(), Port.tcp(22), 'allow ssh connection')

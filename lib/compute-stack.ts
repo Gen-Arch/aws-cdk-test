@@ -29,7 +29,7 @@ export class ComputeStack extends cdk.Stack {
       machineImage: new ec2.AmazonLinuxImage(),
       securityGroup: props.sg['bastion'],
       keyName: "mgmt"
-    })
+    });
 
     // app instance
     const app = new autoscaling.AutoScalingGroup(this, `${suffix}-app`, {
