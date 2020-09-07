@@ -1,19 +1,27 @@
 #!/usr/bin/env node
-import 'source-map-support/register';
 import * as cdk from '@aws-cdk/core';
-import { ComputeStack } from '../lib/compute-stack';
-import { NetworkStack } from '../lib/network-stack';
-import { R53Stack } from '../lib/r53-stack';
+
+import { Compute } from '../lib/compute';
+import { Network } from '../lib/network';
+import { R53     } from '../lib/r53';
+
+
+
+class AwsCdkTestStack extends cdk.Stack {
+  constructor(parent: cdk.App, name: string, props: cdk.StackProps) {
+      super(parent, name, props);
+      const env:      string = this.node.tryGetContext('env');
+      const params:   any    = this.node.tryGetContext(env);
+
+      const network = new Network(this, 'Network', {env: env, config: params});
+      const compute = new Compute(this, 'Compute', {env: env, vpc: network.vpc, sg: network.sg});
+      const r53     = new R53(this, 'R53', {env: env, vpc: network.vpc, nodes: compute.nodes});
+ }
+}
 
 const app = new cdk.App();
-const networkStack = new NetworkStack(app, "NetworkStack");
-
-const computeStack = new ComputeStack(app, 'ComputeStack', {
-  vpc: networkStack.vpc,
-  sg: networkStack.sg,
-});
-
-const r35Stack  = new R53Stack(app, "R53Stack", {
-  vpc: networkStack.vpc,
-  ec2s: computeStack.ec2s,
+new AwsCdkTestStack(app, "AwsCdkTestStack", {
+  env: {
+    region: "ap-northeast-1"
+  }
 })

@@ -7,7 +7,16 @@
     "prj": "aws-cdk",
     "hostzone": "gen-arch.com",
     "dev": {
-      "maxAzs": 2
+      "maxAzs": 3,
+      "vpc": {
+        "cibr": "10.9.0.0/16",
+        "private-1a": "10.9.0.0/24",
+        "private-1c": "10.9.1.0/24",
+        "private-1d": "10.9.2.0/24",
+        "public-1a":  "10.9.3.0/24",
+        "public-1c":  "10.9.4.0/24",
+        "public-1d":  "10.9.5.0/24"
+      }
     },
     "stg": {
       "maxAzs": 1
