@@ -7,20 +7,20 @@
     "prj": "aws-cdk",
     "hostzone": "gens.com",
     "dev": {
-      "maxAzs": 1,
       "vpc": {
+        "maxAzs": 1,
         "cibr": "10.9.0.0/16"
       }
     },
     "stg": {
-      "maxAzs": 1,
       "vpc": {
+        "maxAzs": 1,
         "cibr": "10.9.0.0/16"
       }
     },
     "prd": {
-      "maxAzs": 2,
       "vpc": {
+        "maxAzs": 2,
         "cibr": "10.9.0.0/16"
       }
     }

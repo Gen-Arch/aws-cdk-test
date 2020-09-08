@@ -9,7 +9,6 @@ import {
 } from "@aws-cdk/aws-elasticache";
 
 interface ElastiCacheProps {
-  env: string;
   vpc: IVpc;
   sg: { [key: string]: ISecurityGroup; };
 }
@@ -18,19 +17,20 @@ export class ElastiCache extends Construct {
   constructor(parent: Construct, name: string, props: ElastiCacheProps) {
     super(parent, name);
 
+    const env: string = this.node.tryGetContext('env');
+
     const subnets = props.vpc.privateSubnets.map(subnet => subnet.subnetId)
-    const subnetGroup = new CfnSubnetGroup(this, `${props.env}-subnet`, {
-      cacheSubnetGroupName: `${props.env}-subnet`,
-      description: `${props.env} subnet`,
+    const subnetGroup = new CfnSubnetGroup(this, `${env}-subnet`, {
+      cacheSubnetGroupName: `${env}-subnet`,
+      description: `${env} subnet`,
       subnetIds: subnets
     })
 
-
-    const redis = new CfnCacheCluster(this, `${props.env}-redis-1`, {
+    const redis = new CfnCacheCluster(this, `${env}-redis-1`, {
       azMode: "single-az",
       cacheNodeType: "cache.t3.micro",
-      cacheSubnetGroupName: `${props.env}-subnet`,
-      clusterName: `${props.env}-redis-1`,
+      cacheSubnetGroupName: `${env}-subnet`,
+      clusterName: `${env}-redis-1`,
       engine: "redis",
       engineVersion: "5.0.6",
       numCacheNodes: 1,

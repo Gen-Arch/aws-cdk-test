@@ -12,7 +12,6 @@ import {
 } from "@aws-cdk/aws-ec2";
 
 interface ComputeStackProps {
-  env: string;
   vpc: IVpc;
   sg: { [key: string]: ISecurityGroup; };
 }
@@ -23,12 +22,13 @@ export class Compute extends Construct {
   constructor(parent: Construct, name: string, props: ComputeStackProps) {
     super(parent, name);
 
+    const env: string = this.node.tryGetContext('env');
     const hostzone: string = this.node.tryGetContext('hostzone');
 
     // create mgmt instance
-    this.nodes["bastion"] = new Instance(this, `${props.env}-bastion`, {
+    this.nodes["bastion"] = new Instance(this, `${env}-bastion`, {
       vpc: props.vpc,
-      vpcSubnets: { subnetName: `${props.env}-public` },
+      vpcSubnets: { subnetName: `${env}-public` },
       instanceType: new InstanceType("t3a.micro"),
       machineImage: new LookupMachineImage({ name: "bastion" }),
       securityGroup: props.sg['bastion'],
@@ -43,9 +43,9 @@ export class Compute extends Construct {
     );
 
     // create instance
-    this.nodes["redis-cli"] = new Instance(this, `${props.env}-redis-cli`, {
+    this.nodes["redis-cli"] = new Instance(this, `${env}-redis-cli`, {
       vpc: props.vpc,
-      vpcSubnets: { subnetName: `${props.env}-private` },
+      vpcSubnets: { subnetName: `${env}-private` },
       instanceType: new InstanceType("t3a.micro"),
       machineImage: new AmazonLinuxImage({ generation: AmazonLinuxGeneration.AMAZON_LINUX_2 }),
       securityGroup: props.sg['private-app'],
@@ -61,8 +61,8 @@ export class Compute extends Construct {
     // default setup commands
     for (let name in this.nodes) {
       this.nodes[name].addUserData(
-        `hostnamectl set-hostname ${props.env}-${name}`,
-        `sudo sh -c 'echo "search ${props.env}.${hostzone}" >> /etc/resolv.conf'`,
+        `hostnamectl set-hostname ${env}-${name}`,
+        `sudo sh -c 'echo "search ${env}.${hostzone}" >> /etc/resolv.conf'`,
         "sudo yum update -y",
         "sudo yum install -y vim git"
       )
