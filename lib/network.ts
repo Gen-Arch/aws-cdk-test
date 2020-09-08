@@ -1,4 +1,4 @@
-import { Construct, CfnOutput } from "@aws-cdk/core";
+import { Construct } from "@aws-cdk/core";
 import {
   Vpc,
   Peer,
@@ -45,6 +45,13 @@ export class Network extends Construct {
       allowAllOutbound: true,
       securityGroupName: `${props.env}-private-app-default`,
       description: `${props.env}-private-app-default`
+    });
+
+    this.sg['redis'] = new SecurityGroup(this, "redis", {
+      vpc: this.vpc,
+      allowAllOutbound: true,
+      securityGroupName: `${props.env}-redis`,
+      description: `${props.env}-redis`
     });
 
     // add ingressrule
