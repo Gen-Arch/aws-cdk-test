@@ -1,4 +1,3 @@
-import cdk = require('@aws-cdk/core');
 import { Construct } from "@aws-cdk/core";
 import {
   Instance,
@@ -52,6 +51,12 @@ export class Compute extends Construct {
       securityGroup: props.sg['private-app'],
       keyName: "bastion"
     });
+
+    props.sg["redis"].addIngressRule(
+      Peer.ipv4(this.nodes["redis-cli"].instancePrivateIp + "/32"),
+      Port.tcp(6379),
+      "allow redis-cli"
+    );
 
     // default setup commands
     for (let name in this.nodes) {

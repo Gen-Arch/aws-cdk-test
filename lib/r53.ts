@@ -1,10 +1,9 @@
+import { Construct } from '@aws-cdk/core';
 import r53 = require('@aws-cdk/aws-route53')
 import {
   Instance,
   IVpc,
 } from "@aws-cdk/aws-ec2";
-import cdk = require('@aws-cdk/core');
-import { Construct } from '@aws-cdk/core';
 
 
 interface R53StackProps {
