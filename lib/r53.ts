@@ -22,8 +22,8 @@ export class R53 extends Construct {
       zoneName: `${props.env}.${hostzone}`,
       vpc: props.vpc
     })
-      
-    for( let name in props.nodes ) {
+
+    for (let name in props.nodes) {
       new r53.CnameRecord(this, `${name}.${props.env}.${hostzone}`, {
         zone: private_zone,
         recordName: name,
