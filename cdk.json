@@ -5,7 +5,7 @@
     "aws-cdk:enableDiffNoFail": "true",
     "@aws-cdk/core:stackRelativeExports": "true",
     "prj": "aws-cdk",
-    "hostzone": "gens.com",
+    "hostzone": "genxarch.com",
     "dev": {
       "vpc": {
         "maxAzs": 1,

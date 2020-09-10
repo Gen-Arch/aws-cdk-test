@@ -34,7 +34,7 @@ export class Compute extends Construct {
       securityGroup: props.sg['bastion'],
       keyName: "mgmt",
     });
-    this.nodes["bastion"]
+
     // add rule for mgmt-instance
     props.sg["private-app"].addIngressRule(
       Peer.ipv4(this.nodes["bastion"].instancePrivateIp + "/32"),
@@ -43,6 +43,15 @@ export class Compute extends Construct {
     );
 
     // create instance
+    this.nodes["tools"] = new Instance(this, `${env}-tools`, {
+      vpc: props.vpc,
+      vpcSubnets: { subnetName: `${env}-private` },
+      instanceType: new InstanceType("t3a.micro"),
+      machineImage: new LookupMachineImage({ name: "tools" }),
+      securityGroup: props.sg['private-app'],
+      keyName: "bastion"
+    });
+
     this.nodes["redis-cli"] = new Instance(this, `${env}-redis-cli`, {
       vpc: props.vpc,
       vpcSubnets: { subnetName: `${env}-private` },
@@ -62,7 +71,7 @@ export class Compute extends Construct {
     for (let name in this.nodes) {
       this.nodes[name].addUserData(
         `hostnamectl set-hostname ${env}-${name}`,
-        `sudo sh -c 'echo "search ${env}.${hostzone}" >> /etc/resolv.conf'`,
+        `sudo sh -c 'echo "search ${env}.lan.${hostzone}" >> /etc/resolv.conf'`,
         "sudo yum update -y",
         "sudo yum install -y vim git"
       )
@@ -71,7 +80,6 @@ export class Compute extends Construct {
           "sudo amazon-linux-extras install -y redis4.0"
         )
       }
-    
     };
   }
 }

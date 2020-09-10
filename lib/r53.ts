@@ -1,5 +1,9 @@
 import { Construct } from '@aws-cdk/core';
-import r53 = require('@aws-cdk/aws-route53')
+import {
+  HostedZone,
+  CnameRecord,
+  PrivateHostedZone
+} from '@aws-cdk/aws-route53'
 import {
   Instance,
   IVpc,
@@ -17,13 +21,29 @@ export class R53 extends Construct {
     const hostzone: string = this.node.tryGetContext('hostzone');
     const env: string = this.node.tryGetContext('env');
 
-    const private_zone = new r53.PrivateHostedZone(this, `${env}.${hostzone}`, {
-      zoneName: `${env}.${hostzone}`,
+
+    // lookup for public hostzone
+    const public_zone = HostedZone.fromLookup(this, hostzone, {
+      domainName : hostzone,
+    })
+
+    const public_access_node = ["bastion"]
+    for (let name of public_access_node) {
+      new CnameRecord(this, `${name}.${hostzone}`, {
+        zone: public_zone,
+        recordName: name,
+        domainName: props.nodes[name].instancePublicDnsName
+      })
+    }
+
+    // create private domain
+    const private_zone = new PrivateHostedZone(this, `${env}.lan.${hostzone}`, {
+      zoneName: `${env}.lan.${hostzone}`,
       vpc: props.vpc
     })
 
     for (let name in props.nodes) {
-      new r53.CnameRecord(this, `${name}.${env}.${hostzone}`, {
+      new CnameRecord(this, `${name}.${env}.${hostzone}`, {
         zone: private_zone,
         recordName: name,
         domainName: props.nodes[name].instancePrivateDnsName

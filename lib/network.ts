@@ -18,6 +18,7 @@ export class Network extends Construct {
     const env: string = this.node.tryGetContext('env');
     const params: any = this.node.tryGetContext(env)["vpc"];
 
+    // create vpc
     this.vpc = new Vpc(this, `${env}-vpc`, {
       cidr: params["ciber"],
       enableDnsHostnames: true,

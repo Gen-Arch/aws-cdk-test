@@ -14,7 +14,7 @@ class AwsCdkTestStack extends cdk.Stack {
 
     const network = new Network(this, 'Network');
     const compute = new Compute(this, 'Compute', { vpc: network.vpc, sg: network.sg });
-    const r53 = new R53(this, 'R53', { env: env, vpc: network.vpc, nodes: compute.nodes });
+    const r53 = new R53(this, 'R53', { vpc: network.vpc, nodes: compute.nodes });
     const cache = new ElastiCache(this, 'ElastCache', { vpc: network.vpc, sg: network.sg });
   }
 };
