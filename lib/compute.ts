@@ -47,7 +47,8 @@ export class Compute extends Construct {
       vpc: props.vpc,
       vpcSubnets: { subnetName: `${env}-private` },
       instanceType: new InstanceType("t3a.micro"),
-      machineImage: new LookupMachineImage({ name: "tools" }),
+      //machineImage: new LookupMachineImage({ name: "tools" }),
+      machineImage: new AmazonLinuxImage({generation: AmazonLinuxGeneration.AMAZON_LINUX_2}),
       securityGroup: props.sg['private-app'],
       keyName: "bastion"
     });
