@@ -1,16 +1,29 @@
-# Welcome to your CDK TypeScript project!
+# drawing
+![aaa](https://github.com/Gen-Arch/aws-drawing/blob/master/elasticache-redis.png)
 
-This is a blank project for TypeScript development with CDK.
+# install
+module install
+```
+npm install
+```
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+# configure
+## copy config file
+```
+cp cdk.json.sample cdk.json
+cp env.sh.sample env.sh
+```
 
-## Useful commands
+## edit config file
+Please rewrite the contents of the file to your environment
+```
+vim cdk.json
+vim env.sh
+```
 
- * `npm run build`   compile typescript to js
- * `npm run watch`   watch for changes and compile
- * `npm run test`    perform the jest unit tests
- * `cdk deploy`      deploy this stack to your default AWS account/region
- * `cdk diff`        compare deployed stack with current state
- * `cdk synth`       emits the synthesized CloudFormation template
-
-![aaa](https://github.com/Gen-Arch/aws-cdk-test/blob/master/drawing/elasticache-redis.png)
+# deploy
+```
+cdk synth -c env=<environment>
+cdk diff -c env=<environment>
+cdk deploy -c env=<environment>
+```
