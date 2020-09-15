@@ -1,6 +1,11 @@
 # drawing
 ![aaa](https://github.com/Gen-Arch/aws-drawing/blob/master/master.png)
 
+# 注意事項
+事前に下記を用意してください。
+- 踏み台アクセス用のキーペア
+- 踏み台サーバー用AMI
+
 # install
 module install
 ```
