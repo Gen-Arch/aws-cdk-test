@@ -29,7 +29,7 @@ export class Compute extends Construct {
     this.nodes["bastion"] = new Instance(this, `${env}-bastion`, {
       vpc: props.vpc,
       vpcSubnets: { subnetName: `${env}-public` },
-      instanceType: new InstanceType("t2.micro"),
+      instanceType: new InstanceType("t3a.micro"),
       machineImage: new LookupMachineImage({ name: "bastion" }),
       securityGroup: props.sg['bastion'],
       keyName: this.node.tryGetContext('bastion-keyname'),
@@ -46,7 +46,7 @@ export class Compute extends Construct {
     this.nodes["hoge"] = new Instance(this, `${env}-hoge`, {
       vpc: props.vpc,
       vpcSubnets: { subnetName: `${env}-private` },
-      instanceType: new InstanceType("t2.micro"),
+      instanceType: new InstanceType("t3a.micro"),
       machineImage: new AmazonLinuxImage({generation: AmazonLinuxGeneration.AMAZON_LINUX_2}),
       securityGroup: props.sg['private-app'],
       keyName: "bastion"
