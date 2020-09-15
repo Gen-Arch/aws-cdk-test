@@ -19,21 +19,22 @@ export class R53 extends Construct {
   constructor(parent: Construct, name: string, props: R53StackProps) {
     super(parent, name);
     const hostzone: string = this.node.tryGetContext('hostzone');
-    const env: string = this.node.tryGetContext('env');
+    const env:      string = this.node.tryGetContext('env');
 
-
-    // lookup for public hostzone
-    const public_zone = HostedZone.fromLookup(this, hostzone, {
-      domainName : hostzone,
-    })
-
-    const public_access_node = ["bastion"]
-    for (let name of public_access_node) {
-      new CnameRecord(this, `${name}.${hostzone}`, {
-        zone: public_zone,
-        recordName: name,
-        domainName: props.nodes[name].instancePublicDnsName
+    if(this.node.tryGetContext('public_hostzone')) {
+      // lookup for public hostzone
+      const public_zone = HostedZone.fromLookup(this, hostzone, {
+        domainName : hostzone,
       })
+
+      const public_access_node = ["bastion"]
+      for (let name of public_access_node) {
+        new CnameRecord(this, `${name}.${hostzone}`, {
+          zone: public_zone,
+          recordName: name,
+          domainName: props.nodes[name].instancePublicDnsName
+        })
+      }
     }
 
     // create private domain

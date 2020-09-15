@@ -17,9 +17,8 @@ export class ElastiCache extends Construct {
   constructor(parent: Construct, name: string, props: ElastiCacheProps) {
     super(parent, name);
 
-    const env: string = this.node.tryGetContext('env');
-
-    const subnets = props.vpc.privateSubnets.map(subnet => subnet.subnetId)
+    const env: string       = this.node.tryGetContext('env');
+    const subnets: string[] = props.vpc.privateSubnets.map(subnet => subnet.subnetId)
 
     new CfnSubnetGroup(this, `${env}-subnet`, {
       cacheSubnetGroupName: `${env}-subnet`,

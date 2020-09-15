@@ -22,17 +22,17 @@ export class Compute extends Construct {
   constructor(parent: Construct, name: string, props: ComputeStackProps) {
     super(parent, name);
 
-    const env: string = this.node.tryGetContext('env');
+    const env:      string = this.node.tryGetContext('env');
     const hostzone: string = this.node.tryGetContext('hostzone');
 
-    // create mgmt instance
+    // create bastion
     this.nodes["bastion"] = new Instance(this, `${env}-bastion`, {
       vpc: props.vpc,
       vpcSubnets: { subnetName: `${env}-public` },
-      instanceType: new InstanceType("t3a.micro"),
+      instanceType: new InstanceType("t2.micro"),
       machineImage: new LookupMachineImage({ name: "bastion" }),
       securityGroup: props.sg['bastion'],
-      keyName: "mgmt",
+      keyName: this.node.tryGetContext('bastion-keyname'),
     });
 
     // add rule for mgmt-instance
@@ -43,18 +43,17 @@ export class Compute extends Construct {
     );
 
     // create instance
-    this.nodes["tools"] = new Instance(this, `${env}-tools`, {
+    this.nodes["redis-cli"] = new Instance(this, `${env}-redis-cli`, {
       vpc: props.vpc,
       vpcSubnets: { subnetName: `${env}-private` },
-      instanceType: new InstanceType("t3a.micro"),
-      //machineImage: new LookupMachineImage({ name: "tools" }),
+      instanceType: new InstanceType("t2.micro"),
       machineImage: new AmazonLinuxImage({generation: AmazonLinuxGeneration.AMAZON_LINUX_2}),
       securityGroup: props.sg['private-app'],
       keyName: "bastion"
     });
 
     props.sg["redis"].addIngressRule(
-      Peer.ipv4(this.nodes["tools"].instancePrivateIp + "/32"),
+      Peer.ipv4(this.nodes["redis-cli"].instancePrivateIp + "/32"),
       Port.tcp(6379),
       "allow redis-cli"
     );
@@ -67,6 +66,11 @@ export class Compute extends Construct {
         "sudo yum update -y",
         "sudo yum install -y vim git"
       )
+      if(name == "redis-cli"){
+        this.nodes[name].addUserData(
+          "sudo amazon-linux-extras install redis4.0"
+        )
+      }
     };
   }
 }

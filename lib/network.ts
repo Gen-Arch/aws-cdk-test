@@ -16,11 +16,11 @@ export class Network extends Construct {
     super(parent, name);
 
     const env: string = this.node.tryGetContext('env');
-    const params: any = this.node.tryGetContext(env)["vpc"];
+    const params: any = this.node.tryGetContext(env);
 
     // create vpc
     this.vpc = new Vpc(this, `${env}-vpc`, {
-      cidr: params["ciber"],
+      cidr: params["cibr"],
       enableDnsHostnames: true,
       enableDnsSupport: true,
       maxAzs: params["maxAzs"],

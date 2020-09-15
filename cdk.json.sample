@@ -5,9 +5,9 @@
     "aws-cdk:enableDiffNoFail": "true",
     "@aws-cdk/core:stackRelativeExports": "true",
     "prj": "aws-cdk-test",
-    "hostzone": "genxarch.com",
-    "bastion-keyname": "1940-ito.local",
-    "public_hostzone": true,
+    "hostzone": "example.com",
+    "bastion-keyname": "<bastion key name>",
+    "public_hostzone": false,
     "dev": {
       "cibr": "10.3.0.0/16",
       "maxAzs": 1
