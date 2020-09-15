@@ -45,13 +45,6 @@ export class Network extends Construct {
       description: `${env}-private-app-default`
     });
 
-    this.sg['redis'] = new SecurityGroup(this, "redis", {
-      vpc: this.vpc,
-      allowAllOutbound: true,
-      securityGroupName: `${env}-redis`,
-      description: `${env}-redis`
-    });
-
     // add ingressrule
     this.sg['bastion'].addIngressRule(Peer.anyIpv4(), Port.tcp(22), 'allow ssh connection')
 

@@ -43,7 +43,7 @@ export class Compute extends Construct {
     );
 
     // create instance
-    this.nodes["redis-cli"] = new Instance(this, `${env}-redis-cli`, {
+    this.nodes["hoge"] = new Instance(this, `${env}-hoge`, {
       vpc: props.vpc,
       vpcSubnets: { subnetName: `${env}-private` },
       instanceType: new InstanceType("t2.micro"),
@@ -51,12 +51,6 @@ export class Compute extends Construct {
       securityGroup: props.sg['private-app'],
       keyName: "bastion"
     });
-
-    props.sg["redis"].addIngressRule(
-      Peer.ipv4(this.nodes["redis-cli"].instancePrivateIp + "/32"),
-      Port.tcp(6379),
-      "allow redis-cli"
-    );
 
     // default setup commands
     for (let name in this.nodes) {
@@ -66,11 +60,6 @@ export class Compute extends Construct {
         "sudo yum update -y",
         "sudo yum install -y vim git"
       )
-      if(name == "redis-cli"){
-        this.nodes[name].addUserData(
-          "sudo amazon-linux-extras install redis4.0"
-        )
-      }
     };
   }
 }
