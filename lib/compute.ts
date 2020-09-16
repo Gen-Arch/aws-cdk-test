@@ -1,7 +1,6 @@
 import cdk = require("@aws-cdk/core");
 import ec2 = require("@aws-cdk/aws-ec2");
 import asg = require("@aws-cdk/aws-autoscaling");
-import { Peer } from "@aws-cdk/aws-ec2";
 
 interface ComputeProps {
   vpc:       ec2.IVpc;
@@ -65,7 +64,7 @@ export class Compute extends cdk.Construct {
           ...setup_comand
         )
 
-        node.allowSshAccessFrom(Peer.anyIpv4())
+        node.allowSshAccessFrom(ec2.Peer.anyIpv4())
       };
     };
 
