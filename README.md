@@ -1,5 +1,5 @@
 # drawing
-![aaa](https://github.com/Gen-Arch/aws-drawing/blob/master/master.png)
+![aaa](https://github.com/Gen-Arch/aws-drawing/blob/master/elasticache-redis.png)
 
 # 注意事項
 事前に下記を用意してください。
