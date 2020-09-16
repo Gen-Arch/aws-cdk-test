@@ -1,5 +1,10 @@
 # drawing
-![aaa](https://github.com/Gen-Arch/aws-drawing/blob/master/elasticache-redis.png)
+![aaa](https://github.com/Gen-Arch/aws-drawing/blob/master/master.png)
+
+# 注意事項
+事前に下記を用意してください。
+- 踏み台から各種サーバーに入るためのキーペア（名前はbastion）
+- 踏み台サーバー用AMI
 
 # install
 module install
