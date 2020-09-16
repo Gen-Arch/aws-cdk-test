@@ -23,41 +23,9 @@ export class Elb extends cdk.Construct {
     const private_secure_subnet: ec2.SubnetSelection = { subnetGroupName: `${env}-private-secure` }
 
     // [targetgroup] ------------------------------------------------------------------
-    const web_tg = new elb.ApplicationTargetGroup(this, `${env}-web-tg`, {
-      vpc: props.vpc,
-      targetType: elb.TargetType.INSTANCE,
-      targetGroupName: `${env}-web-tg`,
-      port: 4567,
-      protocol: elb.ApplicationProtocol.HTTP,
-      targets: [props.asgs["web"]]
-    })
     // --------------------------------------------------------------------------------
 
     // [loadbarancer] -----------------------------------------------------------------
-
-    // create certificate 
-    const hostzone:    string          = this.node.tryGetContext('hostzone');
-    const public_zone: r53.IHostedZone = r53.HostedZone.fromLookup(this, hostzone, { domainName: hostzone })
-    const certificateArn = new acm.DnsValidatedCertificate(this, 'SiteCertificate', {
-      domainName: `*.${hostzone}`,
-      hostedZone: public_zone,
-      region: 'ap-northeast-1',
-    }).certificateArn
-    
-    // create web-alb
-    this.albs["web"] = new elb.ApplicationLoadBalancer(this, `${env}-web-alb`, {
-      vpc: props.vpc,
-      internetFacing: true,
-      vpcSubnets: public_subnet,
-    })
-    this.albs["web"].connections.allowDefaultPortFromAnyIpv4
-
-    // add listener
-    const web_alb_https = this.albs["web"].addListener('web-alb-https', {
-      port: 443,
-      defaultTargetGroups: [web_tg],
-      certificateArns: [certificateArn],
-    })
     // --------------------------------------------------------------------------------
   }
 }

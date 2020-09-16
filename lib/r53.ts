@@ -24,11 +24,6 @@ export class R53 extends cdk.Construct {
       // ====================================================================================
 
       // add records
-      new r53.ARecord(this, `www.${hostzone}`, {
-        zone: public_zone,
-        recordName: "www",
-        target: r53.RecordTarget.fromAlias(new targets.LoadBalancerTarget(props.albs["web"])),
-      })
       // ------------------------------------------------------------------------------------
     }
 

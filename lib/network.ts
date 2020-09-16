@@ -3,6 +3,7 @@ import ec2   = require("@aws-cdk/aws-ec2");
 
 export class Network extends cdk.Construct {
   public readonly vpc: ec2.Vpc;
+  public readonly sg: { [key: string]: ec2.SecurityGroup; } = {};
 
   //public readonly dbSg: SecurityGroup;
   constructor(parent: cdk.Construct, name: string) {
@@ -24,5 +25,13 @@ export class Network extends cdk.Construct {
       ]
     });
     this.vpc.addFlowLog(`${env}-vpc-flow-log`)
+
+    // create securityGroup
+    this.sg['redis'] = new ec2.SecurityGroup(this, "redis", {
+      vpc: this.vpc,
+      allowAllOutbound: true,
+      securityGroupName: `${env}-redis`,
+      description: `${env}-redis`
+    });
   }
 }

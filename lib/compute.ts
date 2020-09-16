@@ -4,6 +4,7 @@ import asg = require("@aws-cdk/aws-autoscaling");
 
 interface ComputeProps {
   vpc:       ec2.IVpc;
+  sg: { [key: string]: ec2.ISecurityGroup; };
 }
 
 export class Compute extends cdk.Construct {
@@ -13,12 +14,10 @@ export class Compute extends cdk.Construct {
   constructor(parent: cdk.Construct, name: string, props: ComputeProps) {
     super(parent, name);
 
-    const env: string    = this.node.tryGetContext('env');
+    const env: string = this.node.tryGetContext('env');
 
     // subnets
-    const public_subnet:         ec2.SubnetSelection = { subnetGroupName: `${env}-public` }
-    const private_subnet:        ec2.SubnetSelection = { subnetGroupName: `${env}-private` }
-    const private_secure_subnet: ec2.SubnetSelection = { subnetGroupName: `${env}-private-secure` }
+    const private_subnet: ec2.SubnetSelection = { subnetGroupName: `${env}-private` }
 
     // ami
     const amazonlinux2 = new ec2.AmazonLinuxImage({ generation: ec2.AmazonLinuxGeneration.AMAZON_LINUX_2 })
@@ -41,13 +40,19 @@ export class Compute extends cdk.Construct {
     })
 
     // create instance
-    this.asgs["web"] = new asg.AutoScalingGroup(this, `${env}-web`, {
+    this.instances["redis-cli"] = new ec2.Instance(this, `${env}-redis-cli`, {
       vpc: props.vpc,
       vpcSubnets: private_subnet,
       instanceType: new ec2.InstanceType("t3a.micro"),
       machineImage: amazonlinux2,
-      keyName: "bastion",
-    })
+      keyName: "bastion"
+    });
+
+    props.sg["redis"].addIngressRule(
+      ec2.Peer.ipv4(this.instances["redis-cli"].instancePrivateIp + "/32"),
+      ec2.Port.tcp(6379),
+      "allow redis-cli"
+    );
 
     // default setup
     for (let [name, node] of Object.entries(this.instances)) {
